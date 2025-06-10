@@ -1,16 +1,22 @@
 from db_config import get_db_conn
+from service.auth import get_password_hash
 
 
-def create_user(username,password):
+
+def create_user(username, password):
     conn = None
+    
     try:
+        if not username or not password:
+            raise ValueError("Username e password são obrigatórios")
+        hashed_password = get_password_hash(password)
         conn = get_db_conn()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO usuarios (username, password)
+            INSERT INTO "Users" (username, password)
             VALUES (%s, %s)
             RETURNING id
-        """, (username, password))
+        """, (username, hashed_password))
         usuario_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
@@ -35,5 +41,21 @@ def get_all_users():
     finally:
         if conn:
             conn.close()
+            
+def get_tables_from_db():
+    conn = get_db_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT table_name
+        FROM information_schema.tables 
+        WHERE table_schema = 'public';
+    """)
+    tables = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return [table[0] for table in tables]
             
             

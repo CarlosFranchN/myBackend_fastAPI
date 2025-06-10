@@ -1,0 +1,25 @@
+# Arquivos sensíveis
+.env
+
+# Ambiente virtual
+venv/
+__pycache__
+
+# Temporários do Python
+*.pyc
+*.pyo
+*.pyd
+
+# Sistemas operacionais
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs e outros
+*.log
+*.pot
+*.err
+__pypackages__
