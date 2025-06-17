@@ -8,5 +8,5 @@ class UserResponse(BaseModel):
     id: int
     username: str
 
-class Config:
-    from_attributes = True  # Para compatibilidade com SQLAlchemy (opcional)
+    class Config:
+        from_attributes = True  # Para compatibilidade com SQLAlchemy (opcional)

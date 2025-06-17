@@ -5,7 +5,7 @@ app = FastAPI()
 
 @app.get("/", status_code=201)
 def helloWorld():
-    return f"Hello world"
+    return {"message": "Serviço de usuário rodando!"}
 
 app.include_router(routes_users)
 
