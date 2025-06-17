@@ -1,24 +1,30 @@
-import psycopg2
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative  import declarative_base
+from sqlalchemy.orm import sessionmaker
+
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env
 load_dotenv()
 
-def get_db_conn():
-    db_user = os.getenv("user")
-    db_password = os.getenv("password")
-    db_host = os.getenv("host")
-    db_port = os.getenv("port")
-    db_name = os.getenv("dbname")
+DATABASE_URL = os.getenv("DATABASE_URL")
+print(DATABASE_URL)
 
-    if not all([db_user, db_password, db_host, db_port, db_name]):
-        raise ValueError("Uma ou mais variáveis de ambiente não foram definidas.")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://","postgresql://",1)
 
-    return psycopg2.connect(
-        user=db_user,
-        password=db_password,
-        host=db_host,
-        port=db_port,
-        dbname=db_name
-    )
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit = False,
+                            autoflush = False,
+                            bind = engine)
+
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
